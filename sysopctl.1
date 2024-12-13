@@ -1,0 +1,81 @@
+.TH SYSOPCTL 1 "December 2024" "v0.1.0" "System Management Tool"
+
+.SH NAME
+sysopctl \- A system management command-line tool for administrators
+
+.SH SYNOPSIS
+.B sysopctl
+[IcommandR] [IoptionsR]
+
+.SH DESCRIPTION
+sysopctl is a custom command-line utility for managing system resources and tasks. It allows users to monitor and control system services, processes, and health.
+
+.SH VERSION
+.B sysopctl
+v0.1.0
+
+.SH COMMANDS
+.TP
+.B service list
+Lists all active system services.
+Example: Bsysopctl service listR
+.TP
+.B service start <service-name>
+Starts the specified service.
+Example: Bsysopctl service start nginxR
+.TP
+.B service stop <service-name>
+Stops the specified service.
+Example: Bsysopctl service stop nginxR
+.TP
+.B system load
+Displays the current system load averages.
+Example: Bsysopctl system loadR
+.TP
+.B disk usage
+Displays disk usage statistics by partition.
+Example: Bsysopctl disk usageR
+.TP
+.B process monitor
+Monitors system processes in real-time.
+Example: Bsysopctl process monitorR
+.TP
+.B logs analyze
+Analyzes recent critical log entries.
+Example: Bsysopctl logs analyzeR
+.TP
+.B backup <path>
+Creates a backup of the specified directory.
+Example: Bsysopctl backup /etcR
+
+.SH OPTIONS
+.TP
+.B --help
+Displays help information.
+Example: Bsysopctl --helpR
+.TP
+.B --version
+Displays the current version of sysopctl.
+Example: Bsysopctl --versionR
+
+.SH EXAMPLES
+.TP
+.B sysopctl service list
+Lists all active system services.
+.TP
+.B sysopctl system load
+Displays the current system load averages.
+.TP
+.B sysopctl backup /home/user
+Creates a backup of the /home/user directory.
+
+.SH AUTHOR
+Developed by Aryaman Saluja.
+
+.SH SEE ALSO
+.BR systemctl (1),
+.BR df (1),
+.BR journalctl (1),
+.BR tar (1)
+
+
