@@ -1,6 +1,7 @@
 #!/bin/bash
 # sysopctl - A system management command line tool
 # Version: v0.1.0
+# Author: Aryaman Saluja
 
 # ASCII Art
 cat << "EOF"
@@ -18,161 +19,106 @@ EOF
 VERSION="v0.1.0"
 
 # Display help message
-function display_help() {
-    cat <<EOF
-sysopctl - A system management command-line tool
+if [[ "$1" == "--help" ]]; then
+    echo "Usage: sysopctl <command> [options]"
+    echo "Commands:"
+    echo "  --help                Show this help message"
+    echo "  --version             Show version information"
+    echo "  service list          List all running services"
+    echo "  service start         <service_name> Start a service"
+    echo "  service stop          <service_name> Stop a service"
+    echo "  service status        <service_name> Show the status of a service"
+    echo "  disk usage            Show disk usage statistics by partition"
+    echo "  process monitor       Monitor real-time system processes"
+    echo "  logs analyze          Analyze system logs for critical entries"
+    echo "  backup                <path> Backup specified files or directories"
+    echo ""
+    exit 0
+fi
 
-Usage: sysopctl [command] [options]
+# Version information
+if [[ "$1" == "--version" ]]; then
+    echo "sysopctl version $version"
+    exit 0
+fi
 
-Commands:
-  service list                     List all active services
-  service start <service-name>     Start a specified service
-  service stop <service-name>      Stop a specified service
-  system load                      Display the current system load
-  disk usage                       Display disk usage by partition
-  process monitor                  Monitor system processes in real-time
-  logs analyze                     Analyze recent critical system logs
-  backup <path>                    Backup system files from the specified path
+# Service management
+if [[ "$1" == "service" ]]; then
+    case "$2" in
+        list)
+            systemctl list-units --type=service
+            ;;
+        start)
+            if [ -n "$3" ]; then
+                sudo systemctl start "$3"
+                echo "Service $3 started."
+            else
+                echo "Please specify a service name to start."
+            fi
+            ;;
+        stop)
+            if [ -n "$3" ]; then
+                sudo systemctl stop "$3"
+                echo "Service $3 stopped."
+            else
+                echo "Please specify a service name to stop."
+            fi
+            ;;
+        status)
+            if [ -n "$3" ]; then
+                systemctl status "$3"
+            else
+                echo "Please specify a service name to check status."
+            fi
+            ;;
+        *)
+            echo "Invalid service command. Use --help for guidance."
+            ;;
+    esac
+fi
 
-Options:
-  --help                           Display this help message
-  --version                        Display the command version
-
-Examples:
-  sysopctl service list
-  sysopctl system load
-  sysopctl backup /etc
-EOF
-}
-
-# Display version
-function display_version() {
-    echo "sysopctl version $VERSION"
-}
-
-# List running services
-function list_services() {
-    systemctl list-units --type=service --state=running
-}
-
-# Start a service
-function start_service() {
-    local service_name="$1"
-    if [ -z "$service_name" ]; then
-        echo "Error: Service name required."
-        return 1
-    fi
-    sudo systemctl start "$service_name" && echo "Service '$service_name' started successfully."
-}
-
-# Stop a service
-function stop_service() {
-    local service_name="$1"
-    if [ -z "$service_name" ]; then
-        echo "Error: Service name required."
-        return 1
-    fi
-    sudo systemctl stop "$service_name" && echo "Service '$service_name' stopped successfully."
-}
-
-# View system load
-function system_load() {
-    uptime
-}
-
-# Display disk usage
-function disk_usage() {
+# Disk usage
+if [[ "$1" == "disk" && "$2" == "usage" ]]; then
     df -h
-}
+else
+    echo "Invalid disk command. Use --help for guidance."
+fi
 
-# Monitor processes
-function process_monitor() {
+# Process monitoring
+if [[ "$1" == "process" && "$2" == "monitor" ]]; then
     top
-}
+else
+    echo "Invalid process command. Use --help for guidance."
+fi
 
-# Analyze system logs
-function logs_analyze() {
-    journalctl -p crit --since=yesterday
-}
+# Log analysis
+if [[ "$1" == "logs" && "$2" == "analyze" ]]; then
+    echo "Recent critical log entries:"
+    sudo journalctl -p 3 -n 10
+else
+    echo "Invalid logs command. Use --help for guidance."
+fi
 
-# Backup system files
-function backup_files() {
-    local path="$1"
-    if [ -z "$path" ]; then
-        echo "Error: Path required."
-        return 1
+# Backup files
+if [[ "$1" == "backup" && -n "$2" ]]; then
+    if [ ! -e "$2" ]; then
+        echo "The specified path does not exist: $2"
+        exit 1
     fi
-    tar -czf backup_$(date +%Y%m%d_%H%M%S).tar.gz "$path" && echo "Backup of '$path' created successfully."
-}
+    backup_dir="$HOME/backup"
+    mkdir -p "$backup_dir"
+    cp -r "$2" "$backup_dir"
+    if [ $? -eq 0 ]; then
+        echo "Backup of $2 completed in $backup_dir."
+    else
+        echo "Failed to back up $2."
+    fi
+else
+    echo "Please specify a path to back up."
+fi
 
-# Main script logic
-case "$1" in
-    --help)
-        display_help
-        ;;
-    --version)
-        display_version
-        ;;
-    service)
-        case "$2" in
-            list)
-                list_services
-                ;;
-            start)
-                start_service "$3"
-                ;;
-            stop)
-                stop_service "$3"
-                ;;
-            *)
-                echo "Invalid service command. Use 'sysopctl --help' for usage."
-                ;;
-        esac
-        ;;
-    system)
-        case "$2" in
-            load)
-                system_load
-                ;;
-            *)
-                echo "Invalid system command. Use 'sysopctl --help' for usage."
-                ;;
-        esac
-        ;;
-    disk)
-        case "$2" in
-            usage)
-                disk_usage
-                ;;
-            *)
-                echo "Invalid disk command. Use 'sysopctl --help' for usage."
-                ;;
-        esac
-        ;;
-    process)
-        case "$2" in
-            monitor)
-                process_monitor
-                ;;
-            *)
-                echo "Invalid process command. Use 'sysopctl --help' for usage."
-                ;;
-        esac
-        ;;
-    logs)
-        case "$2" in
-            analyze)
-                logs_analyze
-                ;;
-            *)
-                echo "Invalid logs command. Use 'sysopctl --help' for usage."
-                ;;
-        esac
-        ;;
-    backup)
-        backup_files "$2"
-        ;;
-    *)
-        echo "Invalid command. Use 'sysopctl --help' for usage."
-        ;;
+# Catch-all for invalid commands
+*)
+    echo "Invalid command. Use --help for guidance."
+    ;;
 esac
