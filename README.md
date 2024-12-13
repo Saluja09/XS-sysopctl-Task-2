@@ -22,17 +22,18 @@ First, clone the repository to your local machine:
 
 bash
 git clone <repository-url>
+
 cd sysopctl
-2. Make the script executable
+
+###2. Make the script executable
 Ensure the sysopctl.sh file is executable:
 
 chmod +x bin/sysopctl.sh
 
-3. Optional: Move the script to your $PATH
+###3. Optional: Move the script to your $PATH
 To use the sysopctl command globally, you can move it to a directory that's in your $PATH:
 
-bash
-Copy code
+
 sudo mv bin/sysopctl.sh /usr/local/bin/sysopctl
 
 
@@ -41,14 +42,17 @@ Once installed, you can use the sysopctl command followed by different subcomman
 
 🔹 Display Version
 To check the version of the sysopctl command:
+
 sysopctl --version
 
 🔹 List Running Services
 To list all active services:
+
 sysopctl service list
 
 🔹 View System Load
 To view the current system load:
+
 sysopctl system load
 
 🔹 Start/Stop Services
@@ -64,18 +68,22 @@ sysopctl service stop <service-name>
 
 🔹 Check Disk Usage
 To check disk usage by partition:
+
 sysopctl disk usage
 
 🔹 Monitor System Processes
 To monitor real-time system processes:
+
 sysopctl process monitor
 
 🔹 Analyze System Logs
 To analyze recent critical system logs:
+
 sysopctl logs analyze
 
 🔹 Backup System Files
 To backup system files to a specified path:
+
 sysopctl backup <path>
 
 📝 Manual Page
