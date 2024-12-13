@@ -25,12 +25,12 @@ git clone <repository-url>
 
 cd sysopctl
 
-###2. Make the script executable
+### 2. Make the script executable
 Ensure the sysopctl.sh file is executable:
 
 chmod +x bin/sysopctl.sh
 
-###3. Optional: Move the script to your $PATH
+### 3. Optional: Move the script to your $PATH
 To use the sysopctl command globally, you can move it to a directory that's in your $PATH:
 
 
